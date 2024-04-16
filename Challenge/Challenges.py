@@ -52,7 +52,7 @@ def loopThisIfNeeded():
 @Logger
 def is_prime():
     # ask for a number
-	number = int(input("Enter a number: "))
+	number = int(input("Enter a number for the iterator: "))
 	# create an instance of the PrimeNumbers class
 	prime = PrimeNumbers(number)
 	# iterate through the prime numbers
@@ -60,6 +60,10 @@ def is_prime():
 		# print
 		print(i)
 	pass
+
+	number2 = int(input("Enter a number for the generator: "))
+	for i in prime_generator(number2):
+		print(i)
 
 # logger
 @Logger
@@ -77,16 +81,17 @@ class PrimeNumbers:
 		# if the current number is greater or equal to the number we want to check, we stop
 		self.current += 1
 		if self.current >= self.n:
-			raise StopIteration
+			# Thank you github copilot for explaining yield and StopIteration
+			yield StopIteration
 		# if the number is prime, return it
-		if self.is_prime(self.current):
+		if self.prime(self.current):
 			return self.current
 		else:
 			# if it's not prime, call the function again
 			return self.__next__()
 
 	# check if the number is prime
-	def is_prime(self, num):
+	def prime(self, num):
 		# if even, it's not prime
 		if num < 2:
 			return False
@@ -97,6 +102,29 @@ class PrimeNumbers:
 				return False
 		return True
 
+@Logger
+def prime_generator(max_value):
+	current = 1
+	# Just loop through the numbers
+	while current < max_value:
+		# if the number is prime, yield it
+		if primeCalc(current):
+			yield current
+		current += 1
+
+@Logger
+def primeCalc(n):
+	# 2 and 3 are prime numbers
+	if n == 2 or n == 3: return True  
+	# even numbers and negatives are not prime
+	if n % 2 == 0 or n < 2: return False
+	# check if the number is divisible by any odd number
+	for i in range(3, int(n ** 0.5) + 1, 2):  
+		# if it is, it's not prime
+		if n % i == 0:
+			return False
+	# if it's not divisible, it's prime
+	return True
 
 
 # -------------------------------------------------------
@@ -129,9 +157,36 @@ def matrix_generator():
 # With descriptor class make it only possible to edit if the new value is greater than the initial value.
 
 def descriptor_class():
+	# create an instance of the class
+	instance = AtrributeThings()
+	print(instance.value)
+	# set the value to 5
+	instance.value = 5
+	print(instance.value)
+	# try to set it to 3
+	instance.value = 3
+	print(instance.value)
+	# try to set it to 6
+	instance.value = 6
+	print(instance.value)
+	
+    
 	pass
 
+@Logger
+class AtrributeThings:
+	def __init__(self, value = 1):
+		self.value = value
 
+	def __get__(self, instance):
+		return instance.__dict__.get('value', self.value)
+
+	def __set__(self, instance, setting):
+		if setting > instance.__dict__.get('value', self.value):
+			instance.__dict__['value'] = setting
+		else:
+			print("Give me number greater than the " + str(instance.__dict__.get('value', self.value)) + "!")
+		pass
 
 
 
@@ -161,20 +216,29 @@ def start():
     # I have a fetish for making menus so...
     # I hope no comment really needed ^^'
 	print("Welcome, choose which challenge you wanna test:")
-	print("0. Exit \n1. Logger decorator with logs \n2. Prime numbers with iterators, generators \n3. n*n matrix \n4. Class atrribute with initial value")
+	print("0. Exit \n"+
+		"1. Logger decorator with logs \n"+
+		"2. Prime numbers with iterators, generators \n"+
+		"3. n*n matrix \n"+
+		"4. Class atrribute with initial value")
 
 	# Just choose a "number" string to test the challenges
 	menuChoice = input("Choose a number: ").strip()
-	cls()
 	if menuChoice == "1":
+		cls()
 		test()
 	elif menuChoice == "2":
-		is_prime()
+		cls()
+		is_prime() # Fix this
 	elif menuChoice == "3":
+		cls()
 		matrix_generator()
-	elif menuChoice == "4": 
-		descriptor_class()
-	elif menuChoice == "0": 
+	elif menuChoice == "4":
+		cls()
+		descriptor_class() # Fix this
+	elif menuChoice == "0":
+		cls()
+		print("Goodbye!")
 		return False
 	else:
 		print("Choose a valid number!")
