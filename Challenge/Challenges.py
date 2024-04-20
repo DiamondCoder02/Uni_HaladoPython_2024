@@ -310,7 +310,7 @@ def start():
 		is_prime() # Fix this
 	elif menuChoice == "3":
 		cls()
-		matrix_generator() # TODO a
+		matrix_generator()
 	elif menuChoice == "4":
 		cls()
 		descriptor_class()
