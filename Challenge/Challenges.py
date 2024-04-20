@@ -1,3 +1,7 @@
+# -------------------------------------------------------
+# Kovács Dániel Márk - KO8LM4
+# -------------------------------------------------------
+
 # This is just to clear the console
 # https://stackoverflow.com/questions/517970/how-can-i-clear-the-interpreter-console
 import os
@@ -77,9 +81,10 @@ def is_prime():
 @Logger
 class PrimeNumbersIter:
 	def __init__(self, n):
-		# store the number and start from 1
+		# store the number and start from 2
 		self.n = n
-		self.current = 1
+		self.current = 2
+		self.primes=[]
 
 	# iterator returns itself as an iterator object
 	def __iter__(self):
@@ -87,23 +92,35 @@ class PrimeNumbersIter:
 
 	def __next__(self):
 		# if the current number is greater or equal to the number we want to check, we stop
-		self.current += 1
 		while True:
 			if self.current >= self.n:
-				# Thank you github copilot for explaining yield and StopIteration
-				yield StopIteration # GC: "StopIteration is a built-in exception in Python that is primarily used to signal the end of an iterator"
+				# Thank you github copilot for explaining raise and StopIteration
+				raise StopIteration # GC: "StopIteration is a built-in exception in Python that is primarily used to signal the end of an iterator"
 			else : # if the number is prime, return it
-				if self.prime(self.current):
+				if self.isPrime(self.current):
+					# store the prime number
 					primeNum = self.current
+					# increment the current number
 					self.current += 1
+					# append the prime number to the list
+					self.primes.append(primeNum)
+					# return the prime number
 					return primeNum
 				else:
-					# if it's not prime, call the function again
-					return self.__next__()
+					# if it's not prime, increment the current number
+					self.current += 1
 
-	# check if the number is prime
-	def prime(self, num):
-		return primeCalc(num)
+	def isPrime(self, n):
+		# 2 and 3 are prime numbers
+		if n == 2 or n == 3: return True
+		# even numbers and negatives are not prime
+		if n % 2 == 0 or n < 2: return False
+		# check if the number is divisible by any prime number
+		for prime in self.primes:
+			# if the number is divisible by a prime number, it's not prime
+			if n % prime == 0:
+				return False
+		return True
 
 
 @Logger
@@ -117,12 +134,11 @@ def prime_generator(max_value):
 			yield current
 		current += 1
 
-@Logger
 def primeCalc(n):
 	# 2 and 3 are prime numbers
 	if n == 2 or n == 3: return True  
 	# even numbers and negatives are not prime
-	if n % 2 == 0 or n < 3: return False
+	if n % 2 == 0 or n < 2: return False
 	# check if the number is divisible by any odd number
 	for i in range(3, int(n ** 0.5) + 1, 2):  # class range(start, stop, step)
 		# if it is, it's not prime
@@ -287,6 +303,8 @@ def infinityThing(intig):
 # This is the start of the program
 # -------------------------------------------------------
 # -------------------------------------------------------
+# Kovács Dániel Márk - KO8LM4
+# -------------------------------------------------------
 
 # If this fires, the first challenge is working
 @Logger
@@ -327,3 +345,7 @@ while True:
     if start() == False: 
         break 
     pass
+
+# -------------------------------------------------------
+# Kovács Dániel Márk - KO8LM4
+# -------------------------------------------------------
