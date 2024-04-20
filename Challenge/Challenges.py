@@ -1,3 +1,11 @@
+# This is just to clear the console
+# https://stackoverflow.com/questions/517970/how-can-i-clear-the-interpreter-console
+import os
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
+
+
+
 # -------------------------------------------------------
 # Challenge 1
 # -------------------------------------------------------
@@ -54,7 +62,7 @@ def is_prime():
     # ask for a number
 	number = int(input("Enter a number for the iterator: "))
 	# create an instance of the PrimeNumbers class
-	prime = PrimeNumbers(number)
+	prime = PrimeNumbersIter(number)
 	# iterate through the prime numbers
 	for i in prime:
 		# print
@@ -67,40 +75,36 @@ def is_prime():
 
 # logger
 @Logger
-class PrimeNumbers:
+class PrimeNumbersIter:
 	def __init__(self, n):
 		# store the number and start from 1
 		self.n = n
 		self.current = 1
 
-	# iterator
+	# iterator returns itself as an iterator object
 	def __iter__(self):
 		return self
 
 	def __next__(self):
 		# if the current number is greater or equal to the number we want to check, we stop
 		self.current += 1
-		if self.current >= self.n:
-			# Thank you github copilot for explaining yield and StopIteration
-			yield StopIteration
-		# if the number is prime, return it
-		if self.prime(self.current):
-			return self.current
-		else:
-			# if it's not prime, call the function again
-			return self.__next__()
+		while True:
+			if self.current >= self.n:
+				# Thank you github copilot for explaining yield and StopIteration
+				yield StopIteration # GC: "StopIteration is a built-in exception in Python that is primarily used to signal the end of an iterator"
+			else : # if the number is prime, return it
+				if self.prime(self.current):
+					primeNum = self.current
+					self.current += 1
+					return primeNum
+				else:
+					# if it's not prime, call the function again
+					return self.__next__()
 
 	# check if the number is prime
 	def prime(self, num):
-		# if even, it's not prime
-		if num < 2:
-			return False
-		# now we check if it's divisible by any number
-		for i in range(2, num):
-			# if it's divisible, it's not prime
-			if num % i == 0:
-				return False
-		return True
+		return primeCalc(num)
+
 
 @Logger
 def prime_generator(max_value):
@@ -109,6 +113,7 @@ def prime_generator(max_value):
 	while current < max_value:
 		# if the number is prime, yield it
 		if primeCalc(current):
+			# GC: When a yield is called, it returns a generator object without beginning execution of a function.
 			yield current
 		current += 1
 
@@ -117,14 +122,15 @@ def primeCalc(n):
 	# 2 and 3 are prime numbers
 	if n == 2 or n == 3: return True  
 	# even numbers and negatives are not prime
-	if n % 2 == 0 or n < 2: return False
+	if n % 2 == 0 or n < 3: return False
 	# check if the number is divisible by any odd number
-	for i in range(3, int(n ** 0.5) + 1, 2):  
+	for i in range(3, int(n ** 0.5) + 1, 2):  # class range(start, stop, step)
 		# if it is, it's not prime
 		if n % i == 0:
 			return False
 	# if it's not divisible, it's prime
 	return True
+
 
 
 # -------------------------------------------------------
@@ -136,16 +142,79 @@ def primeCalc(n):
 # 0, 1 and 2 values randomly.
 
 # write it in different ways:
+# You cannot put a method in the class that generates the matrix.
 
+import random
+
+@Logger
+class MatrixMagic:
+	def __init__(self, size):
+		self.size = size # Matrix size
+		self.current_row = 0 
+	
+	def __iter__(self):
+		return self
+
+	def __next__(self):
+		if self.current_row >= self.size:
+			raise StopIteration
+		else:
+			self.current_row += 1
+			return self.matrix[self.current_row - 1]
+
+	# The @property decorator used to define methods in a class that are intended to be accessed like attributes, 
+	# 	without needing to call them as a method with parentheses.
+	@property # Decorator that makes the method a property
+	def matrix(self):
+		# create a list of lists
+		matrix = []
+		# loop through the size
+		for i in range(self.size):
+			# create a list of random numbers
+			matrix.append([random.randint(0, 2) for i in range(self.size)])
+		# return the matrix
+		return matrix
+
+class MatrixMagic2:
+	def __init__(self, size):
+		self.size = size # Matrix size
+		self.row2 = 0 # row counter
+	
+	def __iter__(self):
+		return self
+
+	# The __next__ method is called to get the next item in the iterator
+	def __next__(self):
+		# if the row is less than the size, create a row
+		if self.row2 < self.size:
+			# create a row of random numbers
+			row = [random.randint(0, 2) for i in range(self.size)]
+			# increment the row
+			self.row2 += 1
+			return row
+		else:
+			# if the row is greater than the size, stop
+			raise StopIteration
+
+@Logger
 def matrix_generator():
+	# ask for a number
+	number = int(input("Enter a number for the matrix: "))
+	# create an instance of the MatrixMagic class
+	matrix = MatrixMagic(number)
+	print("Matrix with property:")
+	# print the matrix
+	for i in matrix.matrix:
+		print(i)
+	print("------")
+
+	# create an instance of the MatrixMagic2 class
+	matrix2 = MatrixMagic2(number)
+	print("Matrix with generator:")
+	for i in matrix2:
+		print(i)
+	print("------")
 	pass
-
-
-
-
-
-
-
 
 
 
@@ -156,44 +225,59 @@ def matrix_generator():
 # Create a class that has one atrribute that has an initial value.
 # With descriptor class make it only possible to edit if the new value is greater than the initial value.
 
-def descriptor_class():
-	# create an instance of the class
-	instance = AtrributeThings()
-	print(instance.value)
-	# set the value to 5
-	instance.value = 5
-	print(instance.value)
-	# try to set it to 3
-	instance.value = 3
-	print(instance.value)
-	# try to set it to 6
-	instance.value = 6
-	print(instance.value)
-	
-    
-	pass
-
 @Logger
 class AtrributeThings:
-	def __init__(self, value = 1):
-		self.value = value
+	def __init__(self, numb = 0):
+		self.numb = numb
 
-	def __get__(self, instance):
-		return instance.__dict__.get('value', self.value)
+	# instance is the instance of the class, owner is the class itself
+	def __get__(self, instance, owner): 
+		# if the value is set, return that, if not, return the initial value
+		return instance.__dict__.get('setNum', self.numb)
 
-	def __set__(self, instance, setting):
-		if setting > instance.__dict__.get('value', self.value):
-			instance.__dict__['value'] = setting
+	def __set__(self, instance, value): # value is the new value
+		# if the value is greater than the setNum value in the dictionary, set it
+		if value > instance.__dict__.get('setNum', self.numb):
+			# set that dictionary value to the new value
+			instance.__dict__['setNum'] = value
 		else:
-			print("Give me number greater than the " + str(instance.__dict__.get('value', self.value)) + "!")
+			# if not, print a message
+			print(f"The number {value} is small. Give number greater than " + str(instance.__dict__.get('setNum', self.numb)) + "!")
+
+# "To use the descriptor, it must be stored as a class variable in another class:"
+# https://docs.python.org/3/howto/descriptor.html#primer
+# This is the stupidest thing I've ever seen in any language. My head can't comprehend this.
+@Logger
+class IHateAttributes:
+    # create an instance of the AtrributeThings class
+    setNum = AtrributeThings(1) # The '1' is the initial value
+
+def descriptor_class():
+    # create an instance of the class
+	intig = IHateAttributes() 
+	print("Give a number, 0 to exit")
+	while True:	
+		if infinityThing(intig) == False: 
+			break 
 		pass
 
+	print("------")
+	pass
 
+def infinityThing(intig):
+	# ask for a number
+	number = int(input(f"Current: {intig.setNum}. Choose a bigger number: ").strip())
+	# if the number is 0, return False to exit the loop
+	if number == 0: 
+		return False
+	intig.setNum = number
 
-
-
-
-
+# Small note: I hate the internet.
+# I had to ask Github Copilot 
+# Q:  "how can I get a value from instance.__dict__ ?"
+# GC: "... If the attribute does not exist, this will raise a 'KeyError'. 
+# 		To avoid this, you can use the 'get' method of the dictionary, 
+# 		which returns 'None' if the key does not exist..."
 
 
 
@@ -203,12 +287,6 @@ class AtrributeThings:
 # This is the start of the program
 # -------------------------------------------------------
 # -------------------------------------------------------
-
-# This is just to clear the console
-# https://stackoverflow.com/questions/517970/how-can-i-clear-the-interpreter-console
-import os
-def cls():
-    os.system('cls' if os.name=='nt' else 'clear')
 
 # If this fires, the first challenge is working
 @Logger
@@ -232,10 +310,10 @@ def start():
 		is_prime() # Fix this
 	elif menuChoice == "3":
 		cls()
-		matrix_generator()
+		matrix_generator() # TODO a
 	elif menuChoice == "4":
 		cls()
-		descriptor_class() # Fix this
+		descriptor_class()
 	elif menuChoice == "0":
 		cls()
 		print("Goodbye!")
