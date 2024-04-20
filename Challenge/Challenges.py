@@ -165,31 +165,33 @@ import random
 @Logger
 class MatrixMagic:
 	def __init__(self, size):
-		self.size = size # Matrix size
-		self.current_row = 0 
+		# Matrix size
+		self.size = size
+		# create a matrix with random numbers
+		self.matrix=[[random.randint(0,2)for i in range(size)]for j in range(size)]
 	
 	def __iter__(self):
+		# row and column counters
+		self.current_row = 0 
+		self.current_col = 0
 		return self
 
 	def __next__(self):
-		if self.current_row >= self.size:
-			raise StopIteration
+		# if the row is less than the size, create a row
+		if self.current_row < self.size:
+			# get the value from the matrix
+			value = self.matrix[self.current_row][self.current_col]
+			# increment the column
+			self.current_col += 1
+			# if the column is equal to the size, increment the row and reset the column
+			if self.current_col == self.size:
+				self.current_row += 1
+				self.current_col = 0
+			# return the value
+			return value
 		else:
-			self.current_row += 1
-			return self.matrix[self.current_row - 1]
-
-	# The @property decorator used to define methods in a class that are intended to be accessed like attributes, 
-	# 	without needing to call them as a method with parentheses.
-	@property # Decorator that makes the method a property
-	def matrix(self):
-		# create a list of lists
-		matrix = []
-		# loop through the size
-		for i in range(self.size):
-			# create a list of random numbers
-			matrix.append([random.randint(0, 2) for i in range(self.size)])
-		# return the matrix
-		return matrix
+			# if the row is greater than the size, stop
+			raise StopIteration
 
 class MatrixMagic2:
 	def __init__(self, size):
@@ -325,7 +327,7 @@ def start():
 		test()
 	elif menuChoice == "2":
 		cls()
-		is_prime() # Fix this
+		is_prime()
 	elif menuChoice == "3":
 		cls()
 		matrix_generator()
