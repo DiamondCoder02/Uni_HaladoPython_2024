@@ -301,6 +301,75 @@ def infinityThing(intig):
 
 # -------------------------------------------------------
 # -------------------------------------------------------
+# Challenge 5 (Last)
+# -------------------------------------------------------
+# Write a Python function that converts a given phone number 
+# Format: "(+36) 30 123 4567"
+# The input phone number can only contain digits.
+# Use regex to validate the phone number.
+# https://en.wikipedia.org/wiki/Telephone_numbers_in_Hungary
+
+import re
+
+@Logger
+def phone_number():
+	phoneNum = input("Enter a phone number: ").strip()
+	if checkPhoneNum(phoneNum):
+		print("Valid phone number")
+	else:
+		print("Invalid phone number")
+	
+	if checkPhoneNum2(phoneNum):
+		print("Valid phone number")
+	else:
+		print("Invalid phone number")
+
+	pass
+
+# Possible phone numbers:
+# 06 30 123 4567
+# 36 30 123 4567
+# 36 30 1234 567
+# 06 30 1234 567
+# 06301234567
+# 06301234567
+
+# Rules:
+# The input number can start only with 06 or 36
+# Then digits can be 20, 30, 70, 1
+# Then 7 digits can be any number
+
+# This is easy mode. I'm stupid so I'm not gonna use this.
+@Logger
+def checkPhoneNum(phoneNumber):
+	# check if the phone number is valid
+	pattern = re.compile(r"(\+\d(06|36))?\s?\(?\d(20|30|70|1)\)?[\s.-]?\d{3}[\s.-]?\d{4}")
+	match = re.search(pattern, phoneNumber)
+	if match:
+		return True
+	else:
+		return False
+
+@Logger
+def checkPhoneNum2(phoneNumber):
+	reg1 = r"^(06|36)"
+	reg2 = r"(20|30|70|1)"
+	reg3 = r"[0-9]{3}"
+	reg4 = r"[0-9]{4}$"
+	# check if the phone number is valid
+	# if re.match(reg1 + reg2 + reg3 + reg4, phoneNumber):
+	if re.match(r"^(06|36) (20|30|70|1) [0-9]{3} [0-9]{4}$", phoneNumber):
+		return True
+	else:
+		return False
+
+
+
+
+
+
+# -------------------------------------------------------
+# -------------------------------------------------------
 # -------------------------------------------------------
 # This is the start of the program
 # -------------------------------------------------------
@@ -314,11 +383,13 @@ def start():
     # I have a fetish for making menus so...
     # I hope no comment really needed ^^'
 	print("Welcome, choose which challenge you wanna test:")
-	print("0. Exit \n"+
-		"1. Logger decorator with logs \n"+
-		"2. Prime numbers with iterators, generators \n"+
-		"3. n*n matrix \n"+
-		"4. Class atrribute with initial value")
+	print("0. Exit \n"
+		"1. Logger decorator with logs \n"
+		"2. Prime numbers with iterators, generators \n"
+		"3. n*n matrix \n"
+		"4. Class atrribute with initial value \n"
+		"5. Phone number validation"
+	)
 
 	# Just choose a "number" string to test the challenges
 	menuChoice = input("Choose a number: ").strip()
@@ -334,6 +405,9 @@ def start():
 	elif menuChoice == "4":
 		cls()
 		descriptor_class()
+	elif menuChoice == "5":
+		cls()
+		phone_number()
 	elif menuChoice == "0":
 		cls()
 		print("Goodbye!")
