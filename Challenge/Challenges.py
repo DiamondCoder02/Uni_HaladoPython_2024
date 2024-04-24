@@ -265,7 +265,7 @@ class AtrributeThings:
 
 # "To use the descriptor, it must be stored as a class variable in another class:"
 # https://docs.python.org/3/howto/descriptor.html#primer
-# This is the stupidest thing I've ever seen in any language. My head can't comprehend this.
+# This is the stupidest thing I've ever seen in any programming language. My head can't comprehend this.
 @Logger
 class IHateAttributes:
     # create an instance of the AtrributeThings class
@@ -307,37 +307,27 @@ def infinityThing(intig):
 # Write a Python function that converts a given phone number 
 # Format: "(+36) 30 123 4567"
 # The input phone number can only contain digits.
-# Use regex to validate the phone number.
+# ??? Use regex to validate the phone number ???
 # https://en.wikipedia.org/wiki/Telephone_numbers_in_Hungary
 
 import re
 
 @Logger
 def phone_number():
+	# ask for a phone number and strip it
 	phoneNum = input("Enter a phone number: ").strip()
-	if checkPhoneNum(phoneNum):
-		print("Valid phone number")
-	else:
-		print("Invalid phone number")
-	
-	if checkPhoneNum2(phoneNum):
-		print("Valid phone number")
-	else:
-		print("Invalid phone number")
-
+	# check if the phone number is valid with my own bad function
 	if noRegexPhone(phoneNum):
-		print("Valid phone number")
+		print("Valid hungarian phone number")
+		# print and convert the phone number
+		print(convertPhoneToReadeableFormat(phoneNum))
 	else:
-		print("Invalid phone number")
-
+		print("Invalid phone number. Won't convert. LOL")
 	pass
 
 # Possible phone numbers:
 # 06 30 123 4567
-# 36 30 123 4567
 # 36 30 1234 567
-# 06 30 1234 567
-# 06301234567
 # 06301234567
 
 # Rules:
@@ -345,29 +335,23 @@ def phone_number():
 # Then digits can be 20, 30, 70, 1
 # Then 7 digits can be any number
 
-# This is easy mode. I'm stupid so I'm not gonna use this.
 @Logger
-def checkPhoneNum(phoneNumber):
+def convertPhoneToReadeableFormat(phoneNumber):
 	# check if the phone number is valid
 	pattern = re.compile(r"(\+\d(06|36))?\s?\(?\d(20|30|70|1)\)?[\s.-]?\d{3}[\s.-]?\d{4}")
+	# check if the phone number matches the pattern
 	match = re.search(pattern, phoneNumber)
 	if match:
-		return True
+		# remove any non-digit characters
+		phoneNumber = re.sub(r"\D", "", phoneNumber)
+		# check if the phone number starts with 06 or 36
+		phoneNumber = re.sub(r"^(06|36)", r"(+36) ", phoneNumber)
+		# add spaces between the numbers
+		phoneNumber = re.sub(r"(\d{2})(\d{3})(\d{4})", r"\1 \2 \3", phoneNumber)
+		# return the phone number
+		return phoneNumber
 	else:
-		return False
-
-@Logger
-def checkPhoneNum2(phoneNumber):
-	reg1 = r"^(06|36)"
-	reg2 = r"(20|30|70|1)"
-	reg3 = r"[0-9]{3}"
-	reg4 = r"[0-9]{4}$"
-	# check if the phone number is valid
-	# if re.match(reg1 + reg2 + reg3 + reg4, phoneNumber):
-	if re.match(r"^(06|36) (20|30|70|1) [0-9]{3} [0-9]{4}$", phoneNumber):
-		return True
-	else:
-		return False
+		return "Not a valid phone number. Can't convert."
 
 @Logger
 def noRegexPhone(phoneNumber):
@@ -396,6 +380,7 @@ def noRegexPhone(phoneNumber):
 	# check if the length is 11
 	if len(phoneNumber) != 11:
 		return False
+	# check if the first number is 20, 30, 70
 	if phoneNumber[2] not in ["2", "3", "7"]:
 		return False
 	if phoneNumber[3] not in ["0"]:
@@ -403,9 +388,7 @@ def noRegexPhone(phoneNumber):
 	# check if the rest of the numbers are digits
 	if not phoneNumber[3:].isdigit():
 		return False
-
-	print(phoneNumber)
-    
+	# print(phoneNumber)
 	return True
 
 
