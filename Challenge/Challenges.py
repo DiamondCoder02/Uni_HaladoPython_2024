@@ -4,6 +4,7 @@
 
 # This is just to clear the console
 # https://stackoverflow.com/questions/517970/how-can-i-clear-the-interpreter-console
+from calendar import c
 import os
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
@@ -324,6 +325,11 @@ def phone_number():
 	else:
 		print("Invalid phone number")
 
+	if noRegexPhone(phoneNum):
+		print("Valid phone number")
+	else:
+		print("Invalid phone number")
+
 	pass
 
 # Possible phone numbers:
@@ -363,6 +369,44 @@ def checkPhoneNum2(phoneNumber):
 	else:
 		return False
 
+@Logger
+def noRegexPhone(phoneNumber):
+	# check if it has spaces
+	if " " in phoneNumber:
+		# remove the spaces
+		phoneNumber = phoneNumber.replace(" ", "")
+	# check if it has brackets
+	if "(" in phoneNumber:
+		# remove the brackets
+		phoneNumber = phoneNumber.replace("(", "")
+		phoneNumber = phoneNumber.replace(")", "")
+	# check if it has a plus
+	if "+" in phoneNumber:
+		# remove the plus
+		phoneNumber = phoneNumber.replace("+", "")
+	# remove any other characters that are not digits
+	phoneNumber = re.sub(r"\D", "", phoneNumber)
+	# check if it has 06 or 36 at the start
+	if phoneNumber.startswith("06") or phoneNumber.startswith("36"):
+		# if it has 06, replace it with 36
+		if phoneNumber.startswith("06"):
+			phoneNumber = phoneNumber.replace("06", "36")
+	else:
+		phoneNumber = "36" + phoneNumber
+	# check if the length is 11
+	if len(phoneNumber) != 11:
+		return False
+	if phoneNumber[2] not in ["2", "3", "7"]:
+		return False
+	if phoneNumber[3] not in ["0"]:
+		return False
+	# check if the rest of the numbers are digits
+	if not phoneNumber[3:].isdigit():
+		return False
+
+	print(phoneNumber)
+    
+	return True
 
 
 
